@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.interceptor';
 import { UserDto } from 'src/common/dto/user.dto';
+import { User } from 'src/common/decorators/user.decorator';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('USER')
@@ -22,8 +23,9 @@ export class UsersController {
     })
     @ApiOperation({summary:"내정보"})
     @Get()
-    getUsers(@Req() req) {
-        return req.user
+    getUsers(@User() user) {
+        return user
+        //res.locals.jwt
     }
 
     @ApiOperation({summary:"회원가입"})
@@ -43,8 +45,8 @@ export class UsersController {
     })
     @ApiOperation({summary:"로그인"})
     @Post('/login')
-    logIn(@Req() req){
-        return req.user;
+    logIn(@User() user){
+        return user;
     }
 
     @ApiOperation({summary:"로그아웃"})
