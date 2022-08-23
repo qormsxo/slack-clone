@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, LoggerService } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  LoggerService,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,18 +17,18 @@ import ormConfig from '../ormconfig';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal :true
-    }), 
+      isGlobal: true,
+    }),
     UsersModule,
     WorkspacesModule,
     ChannelsModule,
     DmsModule,
-    TypeOrmModule.forRoot(ormConfig) 
-],
+    TypeOrmModule.forRoot(ormConfig),
+    // TypeOrmModule.forFeature([Users])
+  ],
   controllers: [AppController],
-  providers: [AppService,ConfigService ],
+  providers: [AppService, ConfigService],
 })
-
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');

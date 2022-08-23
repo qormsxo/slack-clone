@@ -33,7 +33,7 @@ const config: TypeOrmModuleOptions = {
   charset: 'utf8mb4',
   synchronize: false,
   logging: true,
-  keepConnectionAlive: true,
+  KeepConnectionAlive: true,
 };
 
 export = config;

@@ -6,7 +6,7 @@ export class JoinRequestDto {
   @ApiProperty({
     example: 'geuntae0212@gmail.com',
     description: '이메일',
-    required :true
+    required: true,
   })
   public email: string;
 
@@ -15,7 +15,7 @@ export class JoinRequestDto {
   @ApiProperty({
     example: '배근태',
     description: '닉네임',
-    required :true
+    required: true,
   })
   public nickname: string;
 
@@ -24,7 +24,7 @@ export class JoinRequestDto {
   @ApiProperty({
     example: 'qormsxo123',
     description: '비밀번호',
-    required :true
+    required: true,
   })
   public password: string;
 }
