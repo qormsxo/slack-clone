@@ -21,6 +21,11 @@ async function bootstrap() {
     logger: winstonLogger,
   });
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
@@ -45,11 +50,6 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-    }),
-  );
 
   const port: string = env.PORT;
   await app.listen(port);
