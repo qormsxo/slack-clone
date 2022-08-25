@@ -17,6 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import ormConfig from './ormconfig';
 import { Mentions } from './entities/Mentions';
+import config from './ormconfig';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,9 +28,9 @@ import { Mentions } from './entities/Mentions';
     WorkspacesModule,
     ChannelsModule,
     DmsModule,
-    TypeOrmModule.forRoot(ormConfig),
+    TypeOrmModule.forRoot(config),
     AuthModule,
-    TypeOrmModule.forFeature([Mentions]),
+    // TypeOrmModule.forFeature([Mentions]),
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],

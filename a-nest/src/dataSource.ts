@@ -1,23 +1,20 @@
 import { DataSource } from 'typeorm';
-import dotenv from 'dotenv';
-import { ChannelChats } from 'src/entities/ChannelChats';
-import { ChannelMembers } from 'src/entities/ChannelMembers';
-import { Channels } from 'src/entities/Channels';
-import { DMs } from 'src/entities/DMs';
-import { Mentions } from 'src/entities/Mentions';
-import { Users } from 'src/entities/Users';
-import { WorkspaceMembers } from 'src/entities/WorkspaceMembers';
-import { Workspaces } from 'src/entities/Workspaces';
-
-dotenv.config();
+import { ChannelChats } from './entities/ChannelChats';
+import { ChannelMembers } from './entities/ChannelMembers';
+import { Channels } from './entities/Channels';
+import { DMs } from './entities/DMs';
+import { Mentions } from './entities/Mentions';
+import { Users } from './entities/Users';
+import { WorkspaceMembers } from './entities/WorkspaceMembers';
+import { Workspaces } from './entities/Workspaces';
 
 const dataSource = new DataSource({
-  type: 'mysql',
+  type: 'mariadb',
   host: 'localhost',
   port: 3306,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
+  username: 'root',
+  password: 'root',
+  database: 'sleack',
   entities: [
     ChannelChats,
     ChannelMembers,
@@ -33,5 +30,14 @@ const dataSource = new DataSource({
   synchronize: false,
   logging: true,
 });
+
+dataSource
+  .initialize()
+  .then(() => {
+    console.log('Data Source has been initialized!');
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization', err);
+  });
 
 export default dataSource;

@@ -14,7 +14,7 @@ export class AuthService {
     // 유저 가져오기
     const user = await this.usersRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'password', 'nickname'],
+      select: ['id', 'email', 'password'],
     });
     console.log(email, password, user);
     // 유저 없으면 return null

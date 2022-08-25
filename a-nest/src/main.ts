@@ -17,6 +17,8 @@ import passport from 'passport';
 declare const module: any;
 
 async function bootstrap() {
+  console.log(__dirname + '/src/entities/*.ts');
+
   const app = await NestFactory.create(AppModule, {
     logger: winstonLogger,
   });
@@ -42,7 +44,7 @@ async function bootstrap() {
     session({
       resave: false,
       saveUninitialized: false,
-      secret: process.env.COOKIE_SECRET,
+      secret: '@#@$MYSIGN#@$#',
       cookie: {
         httpOnly: true,
       },
@@ -51,7 +53,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  const port: string = env.PORT;
+  const port: string = '3095';
   await app.listen(port);
   console.log(`listening on port ${port}`);
 

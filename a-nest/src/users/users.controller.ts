@@ -11,13 +11,19 @@ import {
 import { JoinRequestDto } from './dto/join.request.dto';
 import { UsersService } from './users.service';
 
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCookieAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.interceptor';
 import { UserDto } from 'src/common/dto/user.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { NotLoggedInGuard } from '../auth/not-logged-in.guard';
+import { Users } from 'src/entities/Users';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('USER')
@@ -25,6 +31,7 @@ import { NotLoggedInGuard } from '../auth/not-logged-in.guard';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @ApiCookieAuth('connect.sid')
   @ApiResponse({
     type: UserDto,
     status: 200,
@@ -32,7 +39,7 @@ export class UsersController {
   })
   @ApiOperation({ summary: '내정보' })
   @Get()
-  getUsers(@User() user) {
+  getUsers(@User() user: Users) {
     return user || false;
     //res.locals.jwt
   }
