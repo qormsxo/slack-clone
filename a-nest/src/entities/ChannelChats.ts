@@ -10,6 +10,8 @@ import {
 } from 'typeorm';
 import { Users } from './Users';
 import { Channels } from './Channels';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Index('UserId', ['UserId'], {})
 @Index('ChannelId', ['ChannelId'], {})
@@ -18,6 +20,12 @@ export class ChannelChats {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
+  @ApiProperty({
+    description: '메시지 내용',
+    example: '아니 왜 안되는데 ',
+  })
+  @IsString()
+  @IsNotEmpty()
   @Column('text', { name: 'content' })
   content: string;
 

@@ -1,10 +1,10 @@
 import { Seeder, Factory } from 'typeorm-seeding';
-import { Connection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Channels } from '../../entities/Channels';
 import { Workspaces } from '../../entities/Workspaces';
 
 export class CreateInitialData implements Seeder {
-  public async run(factory: Factory, connecton: Connection): Promise<any> {
+  public async run(factory: Factory, connecton: DataSource): Promise<any> {
     await connecton
       .createQueryBuilder()
       .insert()

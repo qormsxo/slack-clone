@@ -16,6 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import ormConfig from './ormconfig';
+import { Mentions } from './entities/Mentions';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,7 +29,7 @@ import ormConfig from './ormconfig';
     DmsModule,
     TypeOrmModule.forRoot(ormConfig),
     AuthModule,
-    // TypeOrmModule.forFeature([Users])
+    TypeOrmModule.forFeature([Mentions]),
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],

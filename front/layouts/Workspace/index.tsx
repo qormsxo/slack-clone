@@ -161,6 +161,7 @@ const Workspace = () => {
       <WorkspaceWrapper>
         <Workspaces>
           {userData?.Workspaces.map((ws) => {
+            console.log(ws);
             return (
               <Link key={ws.id} to={`/workspace/${ws.url}/channel/일반`}>
                 <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>

@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { WorkspacesService } from './workspaces.service';
 import { User } from '../common/decorators/user.decorator';
 import { Users } from 'src/entities/Users';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 
 @ApiTags('WORKSPACE')
-@Controller('api/workspaces')
+@Controller('api/workspaces/')
 export class WorkspacesController {
   constructor(private workspacesService: WorkspacesService) {}
 
@@ -21,8 +21,11 @@ export class WorkspacesController {
     return this.workspacesService.createWorkspace(body.name, body.url, user.id);
   }
 
+  @ApiOperation({ summary: '워크스페이스 멤버 가져오기' })
   @Get(':url/members')
-  getAllMembersFromWorkspace() {}
+  getWorkspaceMembers(@Param('url') url: string) {
+    return this.workspacesService.getWorkspaceMembers(url);
+  }
 
   @Post(':url/members')
   inviteMembersToWorkspace() {}

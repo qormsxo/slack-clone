@@ -76,11 +76,60 @@ export class WorkspacesService {
     }
   }
 
+  // 워크스페이스 멤버 초대 (트랜잭션 처리 아직안함)
+  async createWorkspaceMembers(url: string, email: string) {
+    // url 로 워크스페이스 정보 가져오기
+    const workspace = await this.workspaceRepository.findOne({
+      where: { url },
+      // relations : ['Channels'], 이거도 된다
+      join: {
+        alias: 'workspace',
+        innerJoinAndSelect: {
+          channels: 'workspace.Channels',
+        },
+      },
+    });
+    // 이메일로 초대할 유저 정보 가져오기
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) {
+      return null;
+    }
+    const workspaceMember = new WorkspaceMembers();
+    workspaceMember.WorkspaceId = workspace.id;
+    workspaceMember.UserId = user.id;
+    // 워크스페이스에 초대
+    await this.workspaceMembersRepository.save(workspaceMember);
+    const channelMember = new ChannelMembers();
+    // 일반 채널에 자동참가
+    channelMember.ChannelId = workspace.Channels.find(
+      (v) => v.name === '일반',
+    ).id;
+    channelMember.UserId = user.id;
+    await this.channelMembersRepository.save(channelMember);
+  }
+  // 워크스페이스에 있는 멤버들 가져오기
   async getWorkspaceMembers(url: string) {
-    this.usersRepository
-      .createQueryBuilder('u')
-      .innerJoin('u.WorkspaceMembers', 'm')
-      .innerJoin('m.Workspace', 'w', 'w.url = :url', { url })
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.WorkspaceMembers', 'members')
+      .innerJoin('members.Workspace', 'workspace', 'workspace.url = :url', {
+        url,
+      })
       .getMany();
+  }
+  // 이건 왜있는거임? 한명인가
+  async getWorkspaceMember(url: string, id: number) {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .innerJoinAndSelect(
+        'user.Workspaces',
+        'workspaces',
+        'workspaces.url = :url',
+        {
+          url,
+        },
+      )
+      .getOne();
   }
 }

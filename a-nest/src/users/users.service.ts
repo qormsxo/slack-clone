@@ -23,11 +23,22 @@ export class UsersService {
     private dataSource: DataSource,
   ) {}
 
-  getUser() {}
+  async findByEmail(email: string) {
+    return this.usersRepository.findOne({
+      where: { email },
+      select: ['id', 'email', 'password'],
+    });
+  }
 
   async join(email: string, nickname: string, password: string) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     // 이메일 중복 확인
-    const user = await this.usersRepository.findOne({ where: { email } });
+    const user = await queryRunner.manager
+      .getRepository(Users)
+      .findOne({ where: { email } });
     if (user) {
       throw new ForbiddenException('이미 존재하는 사용자입니다.');
     }
@@ -35,15 +46,18 @@ export class UsersService {
     //비밀번호 암호화
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
     try {
       const returned = await queryRunner.manager.getRepository(Users).save({
         email,
         nickname,
         password: hashedPassword,
       });
+
+      // const test = await queryRunner.manager.getRepository(Users).find();
+      // console.log(test);
+      // if (!test) {
+      //   throw new Error('유저 없음 ㅋㅋ');
+      // }
 
       // throw new Error('롤백?');
 
@@ -58,6 +72,7 @@ export class UsersService {
       });
 
       await queryRunner.commitTransaction();
+      return true;
     } catch (error) {
       console.error(error);
       await queryRunner.rollbackTransaction();
