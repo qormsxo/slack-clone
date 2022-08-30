@@ -75,7 +75,7 @@ const Workspace = () => {
       }
       axios
         .post('/api/workspaces', {
-          workspace: newWorkspace,
+          name: newWorkspace,
           url: newUrl,
         })
         .then(() => {

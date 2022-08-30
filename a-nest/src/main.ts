@@ -13,13 +13,13 @@ import { HttpExceptionFilter } from './http-exception.filter';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import path from 'path';
 
 declare const module: any;
 
 async function bootstrap() {
-  console.log(__dirname + '/src/entities/*.ts');
-
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: winstonLogger,
   });
 
@@ -28,6 +28,14 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+  app.useStaticAssets(path.join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads',
+  });
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()

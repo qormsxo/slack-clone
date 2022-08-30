@@ -13,7 +13,8 @@ import { onlineMap } from './onlineMap';
 
 @WebSocketGateway({ namespace: /\/ws-.+/ })
 export class EventsGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer() public server: Server;
 
   @SubscribeMessage('test')
@@ -37,7 +38,7 @@ export class EventsGateway
   }
 
   afterInit(server: Server): any {
-    console.log('init');
+    console.log('events.gateway.ts  : afterInit()  init');
   }
 
   handleConnection(@ConnectedSocket() socket: Socket) {

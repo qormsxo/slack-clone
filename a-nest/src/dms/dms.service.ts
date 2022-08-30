@@ -81,33 +81,33 @@ export class DMsService {
     this.eventsGateway.server.to(receiverSocketId).emit('dm', dmWithSender);
   }
 
-  // async createWorkspaceDMImages(
-  //   url: string,
-  //   files: Express.Multer.File[],
-  //   id: number,
-  //   myId: number,
-  // ) {
-  //   const workspace = await this.workspacesRepository.findOne({
-  //     where: { url },
-  //   });
-  //   for (let i = 0; i < files.length; i++) {
-  //     const dm = new DMs();
-  //     dm.SenderId = myId;
-  //     dm.ReceiverId = id;
-  //     dm.content = files[i].path;
-  //     dm.WorkspaceId = workspace.id;
-  //     const savedDm = await this.dmsRepository.save(dm);
-  //     const dmWithSender = await this.dmsRepository.findOne({
-  //       where: { id: savedDm.id },
-  //       relations: ['Sender'],
-  //     });
-  //     const receiverSocketId = getKeyByValue(
-  //       onlineMap[`/ws-${workspace.url}`],
-  //       Number(id),
-  //     );
-  //     this.eventsGateway.server.to(receiverSocketId).emit('dm', dmWithSender);
-  //   }
-  // }
+  async createWorkspaceDMImages(
+    url: string,
+    files: Express.Multer.File[],
+    id: number,
+    myId: number,
+  ) {
+    const workspace = await this.workspacesRepository.findOne({
+      where: { url },
+    });
+    for (let i = 0; i < files.length; i++) {
+      const dm = new DMs();
+      dm.SenderId = myId;
+      dm.ReceiverId = id;
+      dm.content = files[i].path;
+      dm.WorkspaceId = workspace.id;
+      const savedDm = await this.dmsRepository.save(dm);
+      const dmWithSender = await this.dmsRepository.findOne({
+        where: { id: savedDm.id },
+        relations: ['Sender'],
+      });
+      const receiverSocketId = getKeyByValue(
+        onlineMap[`/ws-${workspace.url}`],
+        Number(id),
+      );
+      this.eventsGateway.server.to(receiverSocketId).emit('dm', dmWithSender);
+    }
+  }
 
   async getDMUnreadsCount(url: string, id: number, myId: number, after) {
     const workspace = await this.workspacesRepository.findOne({

@@ -175,37 +175,44 @@ export class ChannelsService {
       .to(`/ws-${url}-${chatWithUser.ChannelId}`)
       .emit('message', chatWithUser);
   }
-  // // 채팅에 첨부파일 추가
-  // async createWorkspaceChannelImages(
-  //   url: string,
-  //   name: string,
-  //   files: Express.Multer.File[],
-  //   myId: number,
-  // ) {
-  //   console.log(files);
-  //   const channel = await this.channelsRepository
-  //     .createQueryBuilder('channel')
-  //     .innerJoin('channel.Workspace', 'workspace', 'workspace.url = :url', {
-  //       url,
-  //     })
-  //     .where('channel.name = :name', { name })
-  //     .getOne();
-  //   for (let i = 0; i < files.length; i++) {
-  //     const chats = new ChannelChats();
-  //     chats.content = files[i].path;
-  //     chats.UserId = myId;
-  //     chats.ChannelId = channel.id;
-  //     const savedChat = await this.channelChatsRepository.save(chats);
-  //     const chatWithUser = await this.channelChatsRepository.findOne({
-  //       where: { id: savedChat.id },
-  //       relations: ['User', 'Channel'],
-  //     });
-  //     this.eventsGateway.server
-  //       // .of(`/ws-${url}`)
-  //       .to(`/ws-${url}-${chatWithUser.ChannelId}`)
-  //       .emit('message', chatWithUser);
-  //   }
-  // }
+
+  // 채팅에 첨부파일 추가
+  async createWorkspaceChannelImages(
+    url: string,
+    name: string,
+    files: Express.Multer.File[],
+    myId: number,
+  ) {
+    console.log(files);
+    //  채널 찾기
+    const channel = await this.channelsRepository
+      .createQueryBuilder('channel')
+      .innerJoin('channel.Workspace', 'workspace', 'workspace.url = :url', {
+        url,
+      })
+      .where('channel.name = :name', { name })
+      .getOne();
+    if (!channel) {
+      throw new NotFoundException('존재하지 않는 채널입니다.');
+    }
+    // 파일저장
+    for (let i = 0; i < files.length; i++) {
+      const chats = new ChannelChats();
+      chats.content = files[i].path;
+      chats.UserId = myId;
+      chats.ChannelId = channel.id;
+      const savedChat = await this.channelChatsRepository.save(chats);
+      const chatWithUser = await this.channelChatsRepository.findOne({
+        where: { id: savedChat.id },
+        relations: ['User', 'Channel'],
+      });
+      // 메세지 뿌리기
+      this.eventsGateway.server
+        // .of(`/ws-${url}`)
+        .to(`/ws-${url}-${chatWithUser.ChannelId}`)
+        .emit('message', chatWithUser);
+    }
+  }
 
   // 안읽은 메세지
   async getChannelUnreadsCount(url: string, name: string, after) {

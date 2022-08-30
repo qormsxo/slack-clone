@@ -67,6 +67,8 @@ export class WorkspacesService {
         UserId: myId,
         ChannelId: channelReturned.id,
       });
+
+      await queryRunner.commitTransaction();
     } catch (error) {
       console.log(error);
       await queryRunner.rollbackTransaction();

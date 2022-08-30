@@ -30,7 +30,7 @@ const config: TypeOrmModuleOptions = {
   migrations: [__dirname + '/src/migrations/*.ts'],
   charset: 'utf8mb4',
   synchronize: false,
-  logging: true,
+  logging: ['query', 'error'],
 };
 
 export = config;

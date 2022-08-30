@@ -5,11 +5,11 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from 'src/entities/Users';
+import { Users } from '../entities/Users';
 import { Repository, DataSource } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { WorkspaceMembers } from '../entities/WorkspaceMembers';
-import { ChannelMembers } from 'src/entities/ChannelMembers';
+import { ChannelMembers } from '../entities/ChannelMembers';
 
 @Injectable()
 export class UsersService {
@@ -52,14 +52,6 @@ export class UsersService {
         nickname,
         password: hashedPassword,
       });
-
-      // const test = await queryRunner.manager.getRepository(Users).find();
-      // console.log(test);
-      // if (!test) {
-      //   throw new Error('유저 없음 ㅋㅋ');
-      // }
-
-      // throw new Error('롤백?');
 
       await queryRunner.manager.getRepository(WorkspaceMembers).save({
         UserId: returned.id,

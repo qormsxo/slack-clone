@@ -15,9 +15,17 @@ import { DmsModule } from './dms/dms.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
-import ormConfig from './ormconfig';
 import { Mentions } from './entities/Mentions';
+import { DatabaseModule } from './database/database.module';
 import config from './ormconfig';
+import { DataSource } from 'typeorm';
+import { ChannelChats } from './entities/ChannelChats';
+import { ChannelMembers } from './entities/ChannelMembers';
+import { Channels } from './entities/Channels';
+import { DMs } from './entities/DMs';
+import { Users } from './entities/Users';
+import { WorkspaceMembers } from './entities/WorkspaceMembers';
+import { Workspaces } from './entities/Workspaces';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,9 +36,22 @@ import config from './ormconfig';
     WorkspacesModule,
     ChannelsModule,
     DmsModule,
-    TypeOrmModule.forRoot(config),
+    TypeOrmModule.forRoot({
+      type: 'mariadb',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'root',
+      database: 'sleact',
+      autoLoadEntities: true,
+      migrations: [__dirname + '/src/migrations/*.ts'],
+      charset: 'utf8mb4',
+      synchronize: false,
+      logging: ['query', 'error'],
+    }),
     AuthModule,
-    // TypeOrmModule.forFeature([Mentions]),
+    // DatabaseModule,
+    TypeOrmModule.forFeature([Mentions]),
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
